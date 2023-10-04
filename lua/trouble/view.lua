@@ -155,7 +155,12 @@ function View:setup(opts)
   self:set_option("foldlevel", 3, true)
   self:set_option("foldenable", false, true)
   self:set_option("winhighlight", "Normal:TroubleNormal,EndOfBuffer:TroubleNormal,SignColumn:TroubleNormal", true)
-  self:set_option("fcs", "eob: ", true)
+  local fcs = vim.api.nvim_get_option_value("fcs", { scope = "local", win = self.win })
+  fcs = fcs:gsub("eob:.,?", "")
+  if #fcs > 0 then
+    fcs = fcs .. ","
+  end
+  self:set_option("fcs", fcs .. "eob: ", true)
 
   for action, keys in pairs(config.options.action_keys) do
     if type(keys) == "string" then
